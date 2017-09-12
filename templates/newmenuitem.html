@@ -1,20 +1,30 @@
 <html>
-  <head>
-  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-  </head>
+<head></head>
+<body>
+	<h1> CREATE NEW ITEM FOR {{restaurant.name}}: </h1>
+	<form action="#" method = 'post'>
 
-  <body>
+		<p>Name:</p>
 
-    <h1>New Menu Item</h1>
+		<input type ='text' size='30' name='name' placeholder='Name'>
 
-    <form action = "{{ url_for('newMenuItem', restaurant_id=restaurant_id) }}" method = 'post'>
-      
-      <p>Name:</p>
-      <input type = 'text' size='30' name='name'>
-      <input type = 'submit' value='Create'>
+		<p>Description:</p>
 
-    </form>
+		<input type ='text' size='30' name='name' placeholder='Description'>
 
-  </body>
+		<p>Price:</p>
 
-</html>
+		<input type ='text' size='30' name='name' placeholder='Price'>
+
+		<br>
+		<br>
+
+		<input type='submit' value='Submit'>
+
+		<br>
+		<br>
+
+		<a href = '{{ url_for('showRestaurants') }}'> Cancel </a>
+
+	</form>
+</body>
