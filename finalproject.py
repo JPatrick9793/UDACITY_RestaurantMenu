@@ -16,7 +16,7 @@ session = DBSession()
 
 # Fake Restaurants
 restaurant = {'name': 'The CRUDdy Crab', 'id': '1'}
-restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', 'id':'2'},{'name':'Taco Hut', 'id':'3'}]
+restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', 'id':'2'}, {'name':'Taco Hut', 'id':'3'}]
 
 
 # Fake Menu Items
@@ -24,6 +24,7 @@ items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price
 item =  {'name':'Cheese Pizza', 'description':'made with fresh cheese','price':'$5.99','course' :'Entree'}
 
 
+# *** HOMEPAGE ***
 # show all restaurants
 @app.route('/')
 @app.route('/restaurant')
@@ -36,8 +37,23 @@ def showRestaurants():
 # create new restaurant
 @app.route('/restaurant/new')
 def newRestaurant():
-	# return "This page will be for making a new restaurant"
-	return render_template('newRestaurant.html')
+	if request.method == 'POST':
+		# total is number of last Restaurant ID
+		total = session.query(restaurants).count()
+		
+		# create new restaurant entry
+		newRestaurant = restaurants(name = request.form['name'], id = total + 1)
+		
+		# add to the session and commit
+		session.add(newRestaurant)
+		session.commit()
+		
+		# redirect to homepage
+		return redirect(url_for('showRestaurants'))
+
+	else:		
+		# direct user to page for creating new restaurants
+		return render_template('newRestaurant.html')
 
 
 # edit a restaurant
