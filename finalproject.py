@@ -12,6 +12,27 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# JSON page for all restaurants
+@app.route('/restaurants/JSON')
+def showRestaurantsJSON():
+	restaurants = session.query(Restaurant).all()
+	return jsonify( Restaurants = [r.serialize for r in restaurants] )
+
+
+# JSON page for all menu items in particular restaurant
+@app.route('/restaurant/<int:restaurant_id>/menu/JSON/')
+def restaurantMenuJSON(restaurant_id):
+	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
+	return jsonify(MenuItems=[i.serialize for i in items])
+
+
+# JSON page for particular menu item from particular restaurant
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+def menuItemJSON(restaurant_id, menu_id):
+	item = session.query(MenuItem).filter_by(id = menu_id).one()
+	return jsonify(Items = item.serialize)
+
+
 # *** HOMEPAGE ***
 # show all restaurants
 @app.route('/')
@@ -64,6 +85,7 @@ def deleteRestaurant(restaurant_id):
 	else:
 		return render_template('deleteRestaurant.html', restaurant = restaurant)
 
+
 # show a restaurant menu
 @app.route('/restaurant/<int:restaurant_id>/')
 @app.route('/restaurant/<int:restaurant_id>/menu/')
@@ -72,6 +94,7 @@ def showMenu(restaurant_id):
 	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id)
 	# return "This page will show a particular restaurant's menu"
 	return render_template('menu.html', items = items, restaurant = restaurant)
+
 
 # create a new menu item
 @app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
@@ -85,6 +108,7 @@ def newMenuItem(restaurant_id):
 		return redirect( url_for('showMenu', restaurant_id = restaurant_id) )
 	else:
 		return render_template('newMenuItem.html', restaurant = restaurant)
+
 
 # edit a menu item
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit', methods=['GET', 'POST'])
@@ -102,6 +126,7 @@ def editMenuItem(restaurant_id, menu_id):
 		return redirect( url_for('showMenu', restaurant_id = restaurant_id) )
 	else:
 		return render_template('editMenuItem.html', item = editedItem, restaurant = restaurant)
+
 
 # delete a menu item
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET', 'POST'])
