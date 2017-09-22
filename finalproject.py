@@ -41,7 +41,7 @@ def menuItemJSON(restaurant_id, menu_id):
 def showRestaurants():
 	# return "This page will show all my restaurants"
 	restaurants = session.query(Restaurant)
-	return render_template('restaurants.html', restaurants = restaurants)
+	return render_template('index.html', restaurants = restaurants)
 
 
 # create new restaurant
@@ -50,6 +50,7 @@ def newRestaurant():
 	if request.method == 'POST':
 		newRestaurant = Restaurant(name = request.form['name'])
 		session.add(newRestaurant)
+		flash("New Restaurant created!")
 		# session.commit()
 
 		# redirect to homepage
@@ -79,6 +80,7 @@ def deleteRestaurant(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
 	if request.method == 'POST':
 		session.delete(restaurant)
+		flash("Restaurant deleted!")
 		# session.commit()
 		restaurants = session.query(Restaurant)
 		return redirect( url_for('showRestaurants'))
@@ -104,6 +106,7 @@ def newMenuItem(restaurant_id):
 	if request.method == 'POST':
 		newItem = MenuItem(name = request.form['name'], description = request.form['description'], price = request.form['price'], course = request.form['course'], restaurant_id = restaurant_id)
 		session.add(newItem)
+		flash("New item created!!")
 		# session.commit()
 		return redirect( url_for('showMenu', restaurant_id = restaurant_id) )
 	else:
@@ -122,6 +125,7 @@ def editMenuItem(restaurant_id, menu_id):
 		editedItem.price = request.form['price']
 		editedItem.course = request.form['course']
 		session.add(editedItem)
+		flash("Item edited!!")
 		# session.commit()
 		return redirect( url_for('showMenu', restaurant_id = restaurant_id) )
 	else:
@@ -136,6 +140,7 @@ def deleteMenuItem(restaurant_id, menu_id):
 	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id)
 	if request.method == 'POST':
 		session.delete(deletedItem)
+		flash("Item deleted!!")
 		# session.commit()
 		return redirect( url_for('showMenu', restaurant_id = restaurant_id) )
 
